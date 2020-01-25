@@ -1,0 +1,68 @@
+<script src="../isPrototypeOf.js"></script>
+<script src="simpletest.js"></script>
+<script>
+// Test objects
+var reptile = {
+  coldblooded: true
+}
+
+var canine = {
+      bark: function() {
+        console.log('bark');
+      }
+    };
+  
+var dog = Object.create(canine);
+  dog.fetch = function() {
+    console.log('fetch');
+  };
+
+var myDog = Object.create(dog);
+var empty = Object.create(null);
+
+tests({
+  'It should return true if the first argument is a prototype of the second argument.' : function() {
+    var isPrototype = isPrototypeOf(canine, dog);
+    eq(isPrototype, true);
+  },
+  
+  'It should return false if the first argument is not a prototype of the second argument.' : function(){
+    var isPrototype = isPrototypeOf(reptile, dog);
+    eq(isPrototype, false);
+  },
+
+  'It should return false if proto is not an object': function() {
+    var isPrototype = isPrototypeOf(undefined, dog);
+    eq(isPrototype, false);
+    var isPrototype = isPrototypeOf(null, dog);
+    eq(isPrototype, false);
+    var isPrototype = isPrototypeOf('string', dog);
+    eq(isPrototype, false);
+    var isPrototype = isPrototypeOf(5, dog);
+    eq(isPrototype, false);
+  },
+
+  'It should return false if obj is not an object.': function() {
+    var isPrototype = isPrototypeOf(canine, null);
+    eq(isPrototype, false);
+    var isPrototype = isPrototypeOf(canine, undefined);
+    eq(isPrototype, false);
+    var isPrototype = isPrototypeOf(canine, 'dog');
+    eq(isPrototype, false);
+    var isPrototype = isPrototypeOf(canine, 5);
+    eq(isPrototype, false);
+  },
+
+  'It should return false if either argument is a true empty Object.' : function(){
+    var isPrototype = isPrototypeOf(Object.prototype, empty);
+    eq(isPrototype, false);
+
+    var isPrototype = isPrototypeOf(empty, dog);
+    eq(isPrototype, false);
+  },
+  'It should compare prototypes through the entire prototype chain, until it reaches a match or the end of the chain' : function(){
+    var isPrototype = isPrototypeOf(Object.prototype, myDog);
+    eq(isPrototype, true);
+  }
+});
+</script>  
